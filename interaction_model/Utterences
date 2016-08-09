@@ -1,0 +1,16 @@
+StartDemoIntent start the demo
+ThatsThePlanIntent yes that is the plan
+ThatsThePlanIntent that's the plan
+MyMessageIntent tell the room {test|Message}
+MyMessageIntent send {test|Message}
+MyMessageIntent post {test|Message}
+MyMessageIntent post update {test|Message}
+NewRelicIntent display the {servers|NRMessage} from new relic
+NewRelicIntent show the {servers|NRMessage} from new relic
+PagerDutyCreateIntent create a new incident for {reason|PDCMessage}
+PagerDutyAckIntent acknowledge incident number {Number|PDAMessage}
+PagerDutyResolveIntent resolve incident number {Number|PDRMessage}
+WhatsMyMessageIntent what's my message
+WhatsMyMessageIntent what is my message
+WhatsMyMessageIntent what was my message
+WhatsMyMessageIntent what is my slack message

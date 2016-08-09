@@ -1,0 +1,72 @@
+{
+  "intents": 
+  [
+    {
+      "intent": "MyMessageIntent", 
+      "slots": [
+        {
+          "name": "Message",
+          "type": "LITERAL"
+        }
+      ]
+    },
+    {
+      "intent": "StartDemoIntent", 
+      "slots": [
+        {
+          "name": "StartMessage",
+          "type": "LITERAL"
+        }
+      ]
+    },
+    {
+      "intent": "ThatsThePlanIntent", 
+      "slots": [
+        {
+          "name": "PlanMessage",
+          "type": "LITERAL"
+        }
+      ]
+    },
+    {
+      "intent": "NewRelicIntent", 
+      "slots": [
+        {
+          "name": "NRMessage",
+          "type": "LITERAL"
+        }
+      ]
+    },
+    {
+      "intent": "PagerDutyCreateIntent", 
+      "slots": [
+        {
+          "name": "PDCMessage",
+          "type": "LITERAL"
+        }
+      ]
+    }, 
+    {
+      "intent": "PagerDutyAckIntent", 
+      "slots": [
+        {
+          "name": "PDAMessage",
+          "type": "NUMBER"
+        }
+      ]
+    },
+    {
+      "intent": "PagerDutyResolveIntent", 
+      "slots": [
+        {
+          "name": "PDRMessage",
+          "type": "NUMBER"
+        }
+      ]
+    },
+    {
+      "intent": "WhatsMyMessageIntent",
+      "slots": []
+    }
+  ]
+}
