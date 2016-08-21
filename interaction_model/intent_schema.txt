@@ -29,6 +29,15 @@
       ]
     },
     {
+      "intent": "PagerMeIntent", 
+      "slots": [
+        {
+          "name": "PagerMeMessage",
+          "type": "LITERAL"
+        }
+      ]
+    },
+    {
       "intent": "NewRelicIntent", 
       "slots": [
         {
@@ -51,16 +60,25 @@
       "slots": [
         {
           "name": "PDAMessage",
-          "type": "NUMBER"
+          "type": "PAGER_DUTY_INCIDENTS"
+        }
+      ]
+    },    
+    {
+      "intent": "PDResolveIntent", 
+      "slots": [
+        {
+          "name": "PDRMessage",
+          "type": "PAGER_DUTY_INCIDENTS"
         }
       ]
     },
     {
-      "intent": "PagerDutyResolveIntent", 
+      "intent": "ReactIntent", 
       "slots": [
         {
-          "name": "PDRMessage",
-          "type": "NUMBER"
+          "name": "ReactMessage",
+          "type": "REACTIONS"
         }
       ]
     },

@@ -7,6 +7,23 @@ var options = {
   method: 'POST'
 };
 
+var pagerduty_get_options = {
+  host: 'api.pagerduty.com',
+  port: 443,
+  path: '/incidents',
+  method: 'GET'
+};
+
+var pagerduty_put_options = {
+  host: 'api.pagerduty.com',
+  port: 443,
+  path: '/incidents',
+  method: 'PUT'
+};
+
+var pagerduty_auth = "Token token=<your token>";
+var pagerduty_from = "<your email>";
+
 /**
  * This sample shows how to create a simple Lambda function for handling speechlet requests.
  */
@@ -92,6 +109,10 @@ function onIntent(intentRequest, session, callback) {
     else if ("ThatsThePlanIntent" === intentName) {
         console.log("ThatsThePlanIntent");
         thatsThePlan(intent, session, callback);
+    }
+    else if ("PagerMeIntent" === intentName) {
+        console.log("PagerMeIntent");
+        sendPagerMe(intent, session, callback);
     }
     else if ("NewRelicIntent" === intentName) {
         console.log("NewRelicIntent");
@@ -225,7 +246,7 @@ function thatsThePlan(intent, session, callback) {
         message = messageSlot.value;
         console.log("Message slot contains: " + message + ".");
         sessionAttributes = createMessageAttributes(message);
-        speechOutput = "Ok what could go wrong? You are not planning on using the Echo right? Hopefully not that janky Raspberry Pi.";
+        speechOutput = "Ok what could go wrong? You are planning on using the Echo, right? Hopefully not that janky Raspberry Pi.";
         repromptText = "Are we going to do this?";
         var req = https.request(options, function(res) {
             res.setEncoding('utf8');
@@ -251,12 +272,50 @@ function thatsThePlan(intent, session, callback) {
     
 }
 
+function sendPagerMe(intent, session, callback) {
+    var cardTitle = intent.name;
+    var messageSlot = intent.slots.PagerMeMessage;
+    var repromptText = "";
+    var sessionAttributes = {};
+    var shouldEndSession = false;
+    var speechOutput = "";
+    if (messageSlot) {
+        message = messageSlot.value;
+        console.log("Message slot contains: " + message + ".");
+        sessionAttributes = createMessageAttributes(message);
+        speechOutput = "Your message has been sent. You can ask me to repeat it by saying, "
+                + "what's my message?";
+        repromptText = "You can ask me to repeat your message by saying, what's my message?";
+        var req = https.request(options, function(res) {
+            res.setEncoding('utf8');
+            res.on('data', function (chunk) {
+                callback(sessionAttributes, 
+                buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+            });
+        });
+        req.on('error', function(e) {
+            console.log('problem with request: ' + e.message);
+            context.fail(e);
+        });
+        req.write('{"channel": "#bu_bot_test", "username": "Aaron\'s Amazon Echo", "text": "atbot pager me as ablythe@hearst.com", "icon_emoji": ":echo:"}');
+        req.end();
+    } else {
+        speechOutput = "I didn't hear your message clearly, please try again";
+        repromptText = "I didn't hear your message clearly, you can give me your "
+                + "message by saying, my message is...";
+    callback(sessionAttributes, 
+             buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+    }
+    
+    
+}
+
 function sendNewRelicCommand(intent, session, callback) {
     var cardTitle = intent.name;
     var messageSlot = intent.slots.NRMessage;
     var repromptText = "";
     var sessionAttributes = {};
-    var shouldEndSession = false;
+    var shouldEndSession = true;
     var speechOutput = "";
     if (messageSlot) {
         message = messageSlot.value;
@@ -294,7 +353,7 @@ function createPagerDutyIncident(intent, session, callback) {
     var messageSlot = intent.slots.PDCMessage;
     var repromptText = "";
     var sessionAttributes = {};
-    var shouldEndSession = false;
+    var shouldEndSession = true;
     var speechOutput = "";
     if (messageSlot) {
         message = messageSlot.value;
@@ -304,6 +363,10 @@ function createPagerDutyIncident(intent, session, callback) {
                 + "what's my message?";
         repromptText = "You can ask me to repeat your message by saying, what's my message?";
         var req = https.request(options, function(res) {
+            setHeader('Content-Type', 'application/json');
+            setHeader('Accept', 'application/vnd.pagerduty+json;version=2');
+            setHeader('From', pagerduty_form);
+            setHeader('Authorization', pagerduty_auth);
             res.setEncoding('utf8');
             res.on('data', function (chunk) {
                 callback(sessionAttributes, 
@@ -342,7 +405,11 @@ function ackPagerDutyIncident(intent, session, callback) {
         speechOutput = "Your message has been sent. You can ask me to repeat it by saying, "
                 + "what's my message?";
         repromptText = "You can ask me to repeat your message by saying, what's my message?";
-        var req = https.request(options, function(res) {
+        var req = https.request(pagerduty_get_options, function(res) {
+            setHeader('Content-Type', 'application/json');
+            setHeader('Accept', 'application/vnd.pagerduty+json;version=2');
+            setHeader('From', pagerduty_from);
+            setHeader('Authorization', pagerduty_auth);
             res.setEncoding('utf8');
             res.on('data', function (chunk) {
                 callback(sessionAttributes, 
@@ -371,7 +438,7 @@ function resolvePagerDutyIncident(intent, session, callback) {
     var messageSlot = intent.slots.PDRMessage;
     var repromptText = "";
     var sessionAttributes = {};
-    var shouldEndSession = false;
+    var shouldEndSession = true;
     var speechOutput = "";
     if (messageSlot) {
         message = messageSlot.value;
